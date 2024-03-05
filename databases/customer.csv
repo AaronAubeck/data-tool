@@ -1,0 +1,11 @@
+﻿CustomerId,Title,FirstName,LastName,Email,DateOfBirth,Telephone,Address1,Address2,City,Region,Country,PostCode,Created,LastUpdated
+1,Miss,Penelope,Smith,psmith@example.net,19/10/1996,5843324199,862 Holly Harbours,Banking Avenue,Chichester,West Sussex,United Kingdom,NG19 7QJ,15/12/2023 14:46,23/01/2024 11:16
+2,Mr,Richard,Banes,banes.r82@example.com,20/01/1982,7873792553,Flat 80 Roberts Square,Anchor Street,Southampton,Hampshire,United Kingdom,ST21 6SR,15/12/2023 14:46,23/01/2024 11:16
+3,Mrs,Martha,Roberts,martha.roberts93@example.net,21/12/1993,2479433670,21 Walton Lane,,Stoke-on-Trent,Staffordshire ,United Kingdom,PO37 6NN,15/12/2023 14:46,23/01/2024 11:16
+4,Miss,Lizzy,Howard,xelizabeth.howardx@example.com,29/09/2000,7303477560,Flat 64 Jonathan Dam,North Road,London,Greater London,United Kingdom,CH64 3TH,15/12/2023 14:46,23/01/2024 11:16
+5,Mrs,Maria,Chapman,maria.chapman@example.net,16/05/1974,4233979190,Studio 69 Graham River,Drole Road,Liverpool,Merseyside,United Kingdom,BD18 4LP,15/12/2023 14:46,23/01/2024 11:16
+6,Mrs,Michelle,Davies,mdavies@example.co.uk,08/07/1968,5674536155,81 Tony Expressway,,Birmingham,West Midlands,United Kingdom,PH6 2HW,15/12/2023 14:46,23/01/2024 11:16
+7,Mr,Josh,Best,bestman423@example.co.uk,07/05/1997,5020360282,34 Cook Road,,London,Greater London,United Kingdom,M15 6QL,15/12/2023 14:46,23/01/2024 11:17
+8,Mr,David,Martin,martin-work-email@example.com,15/02/1990,4661341365,56 Woodside,Appleton Lane,Colchester,Essex,United Kingdom,PL2 2DD,15/12/2023 14:46,23/01/2024 11:17
+9,Mx,Elowan,Kylee,ek2003@example.com,14/11/2003,6356797717,42 Tower Heights,,Bournemouth,Dorset,United Kingdom,LE4 4JR,15/12/2023 14:46,23/01/2024 11:17
+10,Ms,Karen,Millers,karen.millers@example.org,22/04/1989,4818003821,583 Martin Hollow,Bournemouth Road,Bognor Regis,West Sussex,United Kingdom,CO5 9BJ,15/12/2023 14:46,23/01/2024 11:17
