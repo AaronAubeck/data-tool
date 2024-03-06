@@ -49,83 +49,71 @@ def cleanse_string(raw_string: str) -> list:
     return cleansed_list 
 
 
-def scan_for_email_or_phone(raw_string: str) -> list:
+def scan_for_email_or_phone(raw_string: str, pii_fault_set: set) -> None:
     """
-        Scan string for telephone or email data. Append to fault_list if True
+        Scan string for telephone or email data. Append to fault list if True
 
         Args:
             raw_string - unedited input text to scan
             pii_fault_list - list to append to if there is pii data present
-        
-        Return: list containing if emails or telephone numbers are in the string
+
+        Telephone patterns include (but not exclusive to):
+        +447222555555
+        +44 7222 555 555
+        07222-555-555
+        (0722) 5555555
+        +44(0)7222 555 555
     """
-    email_list = []
-    phone_list = []
-    fault_list = []
+    email_regex = "[\w\-\.]+@([\w-]+\.)+[\w-]{2,4}"
+    telephone_regex = "(\+?[0-9]?)?((.*?\d){10,14})"
 
-    word_list = raw_string.split(' ')
+    contains_email = re.findall(email_regex, raw_string)
+    if len(contains_email) == 1:
+        pii_fault_set.add('Email')
+    elif len(contains_email) > 1:
+        pii_fault_set.add('Emails')
 
-    email_regex = "^[\w\.-]+@([\w-]+\.)+[\w-]{2,4}"
-    telephone_regex = "^(\+?\d{1,3}?)([-.]?\d{1,3}){1,4}"
+    contains_telephone =  re.findall(telephone_regex, raw_string)
+    if len(contains_telephone) == 1:
+        pii_fault_set.add('Telephone Number')
+    elif len(contains_telephone) > 1:
+        pii_fault_set.add('Telephone Numbers')
 
-    # check each item in list is not an email
-    for _word in word_list:
-        contains_email = re.findall(email_regex, _word)
-        print(contains_email)
-        if len(contains_email) > 0:
-            email_list.append('Email')
-       
-        # check each item in list is not a telephone numbers
-        contains_telephone =  re.findall(telephone_regex, _word)
-        if len(contains_telephone) > 0:
-            phone_list.append('Telephone Number')
-
-    # is plural needed?
-    if len(email_list) > 1:
-        fault_list.append('Emails')
-    elif len(email_list) == 1:
-        fault_list.append('Email')
-
-    if len(phone_list) > 1:
-        fault_list.append('Telephone Numbers')
-    elif len(phone_list) == 1:
-        fault_list.append('Telephone Number')
-
-    return fault_list
 
 
 def main():
 
-    # create set for any pii data included in inputted string
+    # create list for any pii data included in inputted string
     pii_fault_set = set()
 
     str_to_check = input("Please type your message you wish to ask a chat bot.")
     
     df_database = pd.read_csv('databases/customer.csv')
 
-    # determine if email or phone number in str
-    fault_list = scan_for_email_or_phone(str_to_check)
-    pii_fault_set.update(fault_list)
+    # print(df_database)
+
+    scan_for_email_or_phone(str_to_check, pii_fault_set)
 
     # pii columns from database excluding email and phone since checking above
     database_pii_cols = ['Title', 'FirstName', 'LastName', 'DateOfBirth', 
                          'Address1', 'Address2', 'City', 'PostCode']
 
     cleansed_list = cleanse_string(str_to_check)
-    
-    # loop through each possible pii column
-    for col in database_pii_cols:
-        print(f"Checking {col} column in database")
-        # loop over each row in database filtering to only pii columns
-        for i, row in df_database[database_pii_cols].iterrows():
+
+    # loop over each row in database filtering to only pii columns
+    for i, row in df_database[database_pii_cols].iterrows():
+        # loop through each column in dataframe
+        for col in database_pii_cols:
             data = str(row[col]).lower()
+            print(f"Checking {col} column in database")
             # loop over each word to check
             for word in cleansed_list:
+                print(f'checking for {word}')
                 if word in data:
                     pii_fault_set.add(col)
 
     if len(pii_fault_set) > 0:
-        print(f"""WARNING: Your inputted text may contain the following pii data:
+        raise Exception(f"""Your inputted text may contain the following pii data:
 {', '.join(pii_fault_set)}
 If this is the case please remove before sending to chatbot""")
 
