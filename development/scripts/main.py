@@ -1,5 +1,6 @@
 import string
 import re
+import sys
 
 # requirements
 from nltk.corpus import stopwords
@@ -7,7 +8,7 @@ import pandas as pd
 
 # This is needed to download the stopwords resources
 import nltk
-nltk.download('stopwords')
+nltk.download('stopwords', quiet=True)
 
 
 def cleanse_string(raw_string: str) -> list:
@@ -57,7 +58,9 @@ def scan_for_email_or_phone(raw_string: str) -> list:
             raw_string - unedited input text to scan
             pii_fault_list - list to append to if there is pii data present
         
-        Return: list containing if emails or telephone numbers are in the string
+        Return: 
+        fault_list = list containing if emails or telephone numbers are in the string
+        word_list = list containing raw emails or telephone numbers included in string
     """
     email_list = []
     phone_list = []
@@ -71,14 +74,13 @@ def scan_for_email_or_phone(raw_string: str) -> list:
     # check each item in list is not an email
     for _word in word_list:
         contains_email = re.findall(email_regex, _word)
-        print(contains_email)
         if len(contains_email) > 0:
-            email_list.append('Email')
+            email_list.append(_word)
        
         # check each item in list is not a telephone numbers
         contains_telephone =  re.findall(telephone_regex, _word)
         if len(contains_telephone) > 0:
-            phone_list.append('Telephone Number')
+            phone_list.append(_word)
 
     # is plural needed?
     if len(email_list) > 1:
@@ -91,21 +93,26 @@ def scan_for_email_or_phone(raw_string: str) -> list:
     elif len(phone_list) == 1:
         fault_list.append('Telephone Number')
 
-    return fault_list
+    word_list = email_list + phone_list
+
+
+    return fault_list, word_list
 
 
 def main():
 
-    # create set for any pii data included in inputted string
+    # create set for any pii data included in inputted string and raw string pii
     pii_fault_set = set()
+    pii_words_set = set()
 
     str_to_check = input("Please type your message you wish to ask a chat bot.")
     
     df_database = pd.read_csv('databases/customer.csv')
 
     # determine if email or phone number in str
-    fault_list = scan_for_email_or_phone(str_to_check)
+    fault_list, word_list = scan_for_email_or_phone(str_to_check)
     pii_fault_set.update(fault_list)
+    pii_words_set.update(word_list)
 
     # pii columns from database excluding email and phone since checking above
     database_pii_cols = ['Title', 'FirstName', 'LastName', 'DateOfBirth', 
@@ -115,19 +122,35 @@ def main():
     
     # loop through each possible pii column
     for col in database_pii_cols:
-        print(f"Checking {col} column in database")
         # loop over each row in database filtering to only pii columns
         for i, row in df_database[database_pii_cols].iterrows():
             data = str(row[col]).lower()
             # loop over each word to check
             for word in cleansed_list:
-                if word in data:
+                if re.compile(r'\b({0})\b'.format(word), flags=re.IGNORECASE).search is True:
                     pii_fault_set.add(col)
+                    pii_words_set.add(word)
 
     if len(pii_fault_set) > 0:
+        see_data = None
+
         print(f"""WARNING: Your inputted text may contain the following pii data:
 {', '.join(pii_fault_set)}
-If this is the case please remove before sending to chatbot""")
+If this is the case please remove before sending to chatbot.""")
+
+        while True:
+            see_data = input('Would you like to see the detected pii data? y/n')
+            if see_data.lower().strip() in ['yes', 'y', 'True']: 
+                print(f"The following has been detected as pii data: {', '.join(pii_words_set)}")
+                sys.exit()
+            elif see_data.lower().strip() in ['no', 'n', 'False']:
+                print('Please consider removing pii data before sending to a chatbot')
+                sys.exit()
+            else:
+                see_data = print('WARNING: Please answer with one of following: yes, y, True, no, n, False')
+        
+    else:
+        print('The provided text should be safe to send to a chatbot.')
 
 
 if __name__ == '__main__':
