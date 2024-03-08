@@ -19,7 +19,7 @@ To run the data-tool you will need an open command line. If you have followed al
 
 You will now be prompted in the command line '*Please type your message you wish to ask a chat bot.*'
 
-![Command line example of data-tool start up](README_Images\image.png)
+![Command line example of data-tool start up](README_Images/image.png)
 
 Type (or copy+paste) any text you would like to be checked before sending to a chat bot. 
 
