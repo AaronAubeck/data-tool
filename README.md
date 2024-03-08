@@ -25,7 +25,7 @@ Type (or copy+paste) any text you would like to be checked before sending to a c
 
 ### Safe Example
 This example shows the user having asked the chat bot to generate a picture of a christmas tree. 
-![Example not including pii data](README_Images\image-1.png)
+![Example not including pii data](README_Images/image-1.png)
 
 Because there is no pii data in the request the data-tool correctly returned that the provided text was safe to send to a chat bot.
 
@@ -33,11 +33,11 @@ Because there is no pii data in the request the data-tool correctly returned tha
 
 In this example the user is asking to generate an email to send to a user. This would be safe but they included the email in the message.
 
-![Example including pii data](README_Images\image-2.png)
+![Example including pii data](README_Images/image-2.png)
 
 The data-tool was able to correctly highlight there was an email included in the provided text. It then asks if the user wishes to see the data in case they are unsure what pii data was included. In this instance the user asked to see the pii data.
 
-![Showing the pii data](README_Images\image-3.png)
+![Showing the pii data](README_Images/image-3.png)
 
 The data-tool was able to correctly display the pii data to the user for removal.
 
